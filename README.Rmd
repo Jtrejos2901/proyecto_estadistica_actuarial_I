@@ -1,0 +1,16 @@
+---
+title: "README"
+author: "Jose Pablo Trejos Conejo, Carolina Navarro Monge"
+date: "2023-10-01"
+output: html_document
+---
+
+# Proyecto de Estadístiva Actuarial I
+## Tablas de contingencia
+
+```{r, echo = FALSE, eval=TRUE}
+x<-2
+y<-3
+print(c(x,y,x+y))
+```
+
