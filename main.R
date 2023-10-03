@@ -1,11 +1,21 @@
 library(openxlsx)
 library(purrr)
+library(tidyr)
+library(ggplot2)
 
 Ruta<- ""
 hojas = getSheetNames(Ruta)
 
+Ruta2<- ""
+hojas2 = getSheetNames(Ruta2)
+
+
 lista_df = map(hojas,function(x){
   read.xlsx(Ruta ,sheet = x)
+})
+
+lista_df2 = map(hojas2,function(x){
+  read.xlsx(Ruta2 ,sheet = x)
 })
 
 #Funciones
@@ -44,8 +54,50 @@ tables<-function(table){
 }
 
 
-# for(i in lista_df){
-#   a<-tables(i)
-#   print(a)
-#   print(chisq.test(a))
-# }
+for(i in 1:length(lista_df)){
+  a<-tables(lista_df[[i]])
+  b<- hojas[i]
+  print(b)
+  print(a)
+  print(chisq.test(a))
+}
+
+#Gráficos
+
+#Reformar datos
+
+
+for (i in lista_df2) {
+  datos_long <- gather(i, Variable, Valor, -Año,-Trimestre, -Condicion)
+  
+  plot <- ggplot (data=datos_long, aes(x=factor(Condicion), y=Valor, col=factor(Año), shape=factor(Trimestre))) +
+    geom_point() + labs(title = "Evolución de Condiciones por Año",
+                        x = "Condicion",
+                        y = "Cantidad de Mujeres", shape = "Trimestre") +
+    scale_color_discrete(name = "Año") +
+    facet_wrap(~Variable, scales = "free_y") +
+    theme_minimal()
+  
+  print(plot)
+  
+}
+
+
+#ggplot(datos_long, aes(x = factor(Condicion), y = Valor, color = as.factor(Año))) +
+# geom_point() + 
+#labs(title = "Evolución de Condiciones por Año",
+#x = "Trimestre",
+# y = "Valor") +
+#scale_color_discrete(name = "Año") +
+#facet_wrap(~Variable, scales = "free_y") +
+#theme_minimal()
+
+
+
+#ggplot(datos_long, aes(factor(Condicion), Valor, col = factor(Año)), shape=factor(Trimestre)) +
+# geom_point(size=2) + 
+#geom_smooth (method = "lm") + labs(title = "Evolución de Condiciones por Año",
+#                                    x = "Condicion",
+#                                   y = "Valor", shape = "Trimestre") +
+#scale_color_discrete(name = "Año") +
+#facet_grid(~Variable)
