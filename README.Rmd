@@ -1,16 +1,15 @@
 ---
 title: "README"
-author: "Jose Pablo Trejos Conejo, Carolina Navarro Monge"
+author: 
+  - "Maria Carolina Navarro Monge C05513"
+  - "Tábata Picado Carmona C05961"
+  - "Jose Pablo Trejos Conejo C07862"
+  - "José Ricardo Acuña González B40047"
 date: "2023-10-01"
 output: html_document
 ---
 
 # Proyecto de Estadístiva Actuarial I
-## Tablas de contingencia
 
-```{r, echo = FALSE, eval=TRUE}
-x<-2
-y<-3
-print(c(x,y,x+y))
-```
+Este proyecto constituye una evalución en el curso de Estadística Actuarial I de la carrera Ciencias Actuariales de la Universidad de Costa Rica al 2023.
 

@@ -1,31 +1,29 @@
+# Se llama a las librerias a implementar en el código.
 library(openxlsx)
 library(purrr)
 library(tidyr)
 library(ggplot2)
 library(readxl)
-
-#Obtención de información:
-
-#Ruta<- ""
-#hojas = getSheetNames(Ruta)
-
-#Ruta2<- ""
-#hojas2 = getSheetNames(Ruta2)
-
-#nombres_hojas <- excel_sheets("")
+library(rcompanion)
+library(dplyr)
 
 
-# lista_df = map(hojas,function(x){
-#   read.xlsx(Ruta ,sheet = x)
-# })
-# 
-# lista_df2 = map(hojas2,function(x){
-#   read.xlsx(Ruta2 ,sheet = x)
-# })
+# Se guarda la ruta del archivo exccel local en la varibale Ruta, se obtienen 
+# los nombres de las hojas y finalmente se leen y guardan en una lista.
+Ruta<- "C:/Users/svm12/Documents/Datos_proyecto_estadistica/Variables_a_usar_0_1.xlsx"
+hojas = getSheetNames(Ruta)
 
-#Funciones:
+list_of_df <- map(hojas,function(x){
+  read.xlsx(Ruta ,sheet = x)
+})
 
-tables<-function(table){
+
+# Función encargada de generar las tablas a ser usadas en las funciones chisq.test
+# y cramerV().
+#
+# @param table: Es un dataframe con la información a convertir en tabla.
+# @return Retorna una tabla con el contenido del dataframe ingresado.
+df_to_table <- function(table){
   condiciones <- (length(table[[1]]) / 8)
   result<-matrix(0,nrow = condiciones , ncol = (length(table) - 3))
   
@@ -41,7 +39,7 @@ tables<-function(table){
         }
       }
     }
-  }else {
+  } else {
     for(i in 1:length(table[[1]])){
       for(j in 1:(length(table) - 3)){
         if(table[[3]][i] == 0){
@@ -53,82 +51,70 @@ tables<-function(table){
     }
   }
   
-  result<-as.table(result)
+  result <- as.table(result)
   dimnames(result) <- list(Condicion=c(0:((length(table[[1]]) / 8) -1)), colnames(table[1,4:length(table)]))
   return(result) 
 }
 
-# for(i in 1:length(lista_df)){
-#   a<-tables(lista_df[[i]])
-#   b<- hojas[i]
-#   print(b)
-#   print(a)
-#   print(chisq.test(a))
-# }
 
-
-
-#Reformar datos:
-
-for (i in lista_df2) {
-  datos_long <- gather(i, Variable, Valor, -Año,-Trimestre, -Condicion)
-  
-  plot <- ggplot (data=datos_long, aes(x=factor(Condicion), y=Valor, col=factor(Año), shape=factor(Trimestre))) +
-    geom_point() + labs(title = "Evolución de Condiciones por Año",
-                        x = "Condicion",
-                        y = "Cantidad de Mujeres", shape = "Trimestre") +
-    scale_color_discrete(name = "Año") +
-    facet_wrap(~Variable, scales = "free_y") +
-    theme_minimal()
-  
-  print(plot)
-  
+# Esta función se encarga de generar todas las tablas requeridas para la
+# investigación haciendo uso de la función ya creada df_to_table.
+#
+# @param dfs: Es una lista que contiene los dataframes a convertir.
+# @return Retorna una lista de tablas.
+dfs_to_tables <- function(dfs){
+  tables <- list()
+  for(i in 1:length(dfs)){
+    tables[[i]] <- df_to_table(dfs[[i]])
+  }
+  return(tables)
 }
 
-#Gráficos
-#ggplot(datos_long, aes(x = factor(Condicion), y = Valor, color = as.factor(Año))) +
-# geom_point() + 
-#labs(title = "Evolución de Condiciones por Año",
-#x = "Trimestre",
-# y = "Valor") +
-#scale_color_discrete(name = "Año") +
-#facet_wrap(~Variable, scales = "free_y") +
-#theme_minimal()
 
+# Se crean las tablas a utilizar en la investigación.
+tables_to_use <- dfs_to_tables(list_of_df)
 
-
-#ggplot(datos_long, aes(factor(Condicion), Valor, col = factor(Año)), shape=factor(Trimestre)) +
-# geom_point(size=2) + 
-#geom_smooth (method = "lm") + labs(title = "Evolución de Condiciones por Año",
-#                                    x = "Condicion",
-#                                   y = "Valor", shape = "Trimestre") +
-#scale_color_discrete(name = "Año") +
-#facet_grid(~Variable)
-
-
-
-lista_df = map(hojas,function(x){
-  read.xlsx(Ruta ,sheet = x)
-})
-
-
-colores_personalizados <- c("Sin pareja" = "purple", "Con pareja" = "pink", 
-                            "Sin hijos" = "purple", "Con hijos" = "pink", 
-                            "0 a 5" = "purple", "6 a 14 " = "pink", 
-                            "6 a 14" = "pink", "15 o más" = "skyblue")
-
-for (i in lista_df){
-  datos_long5 <- gather(i, Variable, Valor, -Año,-Trimestre, -Condicion)
-  
-  plot5 <- ggplot(datos_long5, aes(x = factor(Variable), y = Valor, fill = Condicion)) +
-    geom_boxplot() +
-    scale_fill_manual(values = colores_personalizados) +
-    labs(
-      title = "Grafico de cajas y bigotes",
-      x = "Variable",
-      y = "Cantidad de Mujeres"
-    ) + 
-    theme(axis.text.x = element_text(angle = 45, hjust = 1))
-  plot_int5 <- ggplotly(plot5)
-  print(plot_int5)
+# Esta función corre la prueba chi-cuadrado en todas la tablas y guarda los 
+# los resultados en una lista.
+#
+# @param tables: Es una lista de tablas.
+# @return Retorna una lista con los resultados de la prueba sobre cada tabla.
+chi_tests <- function(tables){
+  results <- list()
+  for(i in 1:length(tables)){
+    results[[i]] <- chisq.test(tables[[i]])
+  }
+  return(results)
 }
+
+
+# Se guardan los resultados de la prueba chi-cuadrado sobre las tablas.
+chi_test_results <- chi_tests(tables_to_use)
+
+
+# Esta función se encarga de correr la prueba de la V de Cramer sobre todas las
+# tablas.
+#
+# @param tables: Es una lista de tablas.
+# @return Retorna una lista con los resultados de la prueba sobre cada tabla.
+cramerv_test <- function(tables){
+  results <- list()
+  for(i in 1:length(tables)){
+    results[[i]] <- cramerV(tables[[i]])
+  }
+  return(results)
+}
+
+# Se guardan los resultados de la prueba V de Cramer sobre las tablas.
+cramerv_test_results <- cramerv_test(tables_to_use)
+
+for(i in 1:length(list_of_df)){
+  print(hojas[[i]])
+  print(chi_test_results[[i]])
+  print(cramerv_test_results[[i]])
+}
+
+df <- data.frame(cramerv_test_results)
+colnames(df) <- hojas
+
+write.xlsx(df, "resultados_cramer.xlsx")
