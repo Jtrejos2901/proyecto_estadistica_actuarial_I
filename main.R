@@ -69,7 +69,7 @@ df_to_table <- function(table){
   } else {
     for(i in 1:length(table[[1]])){
       for(j in 1:(length(table) - 3)){
-        if(type_c(table[[3]][i]) == 0){
+        if(type_c(table[[3]][i]) == 1){
           result[1,j] = result[1,j] + table[[j+3]][i]
         } else{
           result[2,j] = result[2,j] + table[[j+3]][i]
@@ -110,6 +110,8 @@ dfs_to_tables <- function(dfs){
 
 # Se crean las tablas a utilizar en la investigación.
 tables_to_use <- dfs_to_tables(list_of_df)
+View(tables_to_use[[1]])
+
 
 # Esta función corre la prueba chi-cuadrado en todas la tablas y guarda los 
 # los resultados en una lista.
@@ -190,6 +192,8 @@ df <- data.frame(results)
 colnames(df) <- c("Chi-cuadrado", "V de cramer", "Coeficiente de contingencia")
 rownames(df) <- row_names
 
+View(df)
+
 # Esta función se encarga de transformar las tablas de contingencia para porder
 # generar los gráficos de barras en términos procentuales.
 #
@@ -243,7 +247,7 @@ colores_personalizados <- c("Sin pareja" = "#FFA07A", "Con pareja" = "#528B8B",
                             "0 a 5" = "#FFA07A", "6 a 14 " = "#528B8B",  
                             "6 a 14" = "pink", "15 o más" = "#528B8B") 
 
-#Gráficos de caja de bigotes
+#Gráficos de caja de bigotes.
 for (i in 1:length(list_of_df2)){ 
   datos<- list_of_df2[[i]] 
   colnames(datos) <- gsub("[.]", " ", colnames(datos)) 
@@ -256,4 +260,18 @@ for (i in 1:length(list_of_df2)){
     theme_minimal() 
   print(plot) 
 }
+
+#Gráficos de mosaico.
+df_to_plot <- list_of_df[[10]]
+print(colnames(df_to_plot))
+colnames(df_to_plot) <- c("Año","Trimestre", "Condicion", "Alta","Media", "No calificada") 
+
+df_to_plot <- df_to_table(df_to_plot)
+df_to_plot<- as.data.frame(df_to_plot)
+
+
+ggplot(data = df_to_plot) +
+  geom_mosaic(aes(weight=Freq, x=product(Condicion), fill=Var2), na.rm=TRUE) +
+  labs(x = "Maternindad", y = "Cualificación", fill = "Cualificación") + 
+  theme_minimal()
 

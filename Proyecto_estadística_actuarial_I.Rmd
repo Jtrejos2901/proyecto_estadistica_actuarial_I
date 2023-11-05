@@ -58,6 +58,7 @@ library(openxlsx)
 library(purrr)
 library(tidyr)
 library(ggplot2)
+library(ggmosaic)
 library(readxl)
 library(rcompanion)
 library(dplyr)
@@ -136,7 +137,7 @@ df_to_table <- function(table){
   } else {
     for(i in 1:length(table[[1]])){
       for(j in 1:(length(table) - 3)){
-        if(type_c(table[[3]][i]) == 0){
+        if(type_c(table[[3]][i]) == 1){
           result[1,j] = result[1,j] + table[[j+3]][i]
         } else{
           result[2,j] = result[2,j] + table[[j+3]][i]
@@ -375,4 +376,20 @@ for (i in 1:length(list_of_df2)){
     theme_minimal() 
   print(plot) 
 }
+```
+
+## Gráficos de cajas de mosaico
+```{r}
+df_to_plot <- list_of_df[[10]]
+print(colnames(df_to_plot))
+colnames(df_to_plot) <- c("Año","Trimestre", "Condicion", "Alta","Media", "No calificada") 
+
+df_to_plot <- df_to_table(df_to_plot)
+df_to_plot<- as.data.frame(df_to_plot)
+
+
+ggplot(data = df_to_plot) +
+  geom_mosaic(aes(weight=Freq, x=product(Condicion), fill=Var2), na.rm=TRUE) +
+  labs(x = "Maternindad", y = "Cualificación", fill = "Cualificación") + 
+  theme_minimal()
 ```
