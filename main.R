@@ -12,10 +12,10 @@ library(DescTools)
 
 # Se guarda la ruta del archivo exccel local en la varibale Ruta, se obtienen 
 # los nombres de las hojas y finalmente se leen y guardan en una lista.
-Ruta<- "C:/Users/svm12/Documents/Datos_proyecto_estadistica/Variables_a_usar_letras.xlsx"
+Ruta<- "Variables_a_usar_letras.xlsx"
 hojas = getSheetNames(Ruta)
 
-Ruta2 <- "C:/Users/svm12/Documents/Datos_proyecto_estadistica/Variables_utilizadas_con_porcentajes.xlsx"
+Ruta2 <- "Variables_utilizadas_con_porcentajes.xlsx"
 hojas2 = getSheetNames(Ruta2)
 
 list_of_df <- map(hojas,function(x){
@@ -44,6 +44,8 @@ type_c <- function(condition){
   
 }
 
+View(tables_to_use[[2]])
+View(tables_barplots[[2]])
 
 # Función encargada de generar las tablas a ser usadas en las funciones chisq.test
 # y cramerV().
@@ -192,7 +194,6 @@ df <- data.frame(results)
 colnames(df) <- c("Chi-cuadrado", "V de cramer", "Coeficiente de contingencia")
 rownames(df) <- row_names
 
-View(df)
 
 # Esta función se encarga de transformar las tablas de contingencia para porder
 # generar los gráficos de barras en términos procentuales.
@@ -202,7 +203,7 @@ View(df)
 tables_for_barplots <- function(tables){
   results <- list()
   for(i in 1:length(tables)){
-    results[[i]] <- prop.table(tables[[i]], margin = 2) 
+    results[[i]] <- prop.table(tables[[i]], margin = 1) 
   }
   return(results)
 }
