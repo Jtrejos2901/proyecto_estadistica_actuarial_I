@@ -311,7 +311,7 @@ generar los gráficos de barras en términos procentuales.
 tables_for_barplots <- function(tables){
   results <- list()
   for(i in 1:length(tables)){
-    results[[i]] <- prop.table(tables[[i]], margin = 2) 
+    results[[i]] <- prop.table(tables[[i]], margin = 1) 
   }
   return(results)
 }

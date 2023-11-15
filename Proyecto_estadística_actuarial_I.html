@@ -2090,7 +2090,7 @@ contingencia. <code>@return</code>: Retorna las tablas modificadas.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>tables_for_barplots <span class="ot">&lt;-</span> <span class="cf">function</span>(tables){</span>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(tables)){</span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    results[[i]] <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tables[[i]], <span class="at">margin =</span> <span class="dv">2</span>) </span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    results[[i]] <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tables[[i]], <span class="at">margin =</span> <span class="dv">1</span>) </span>
 <span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>  }</span>
 <span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
 <span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>}</span>
