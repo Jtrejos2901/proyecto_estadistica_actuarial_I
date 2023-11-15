@@ -110,8 +110,6 @@ dfs_to_tables <- function(dfs){
 # Se crean las tablas a utilizar en la investigación.
 tables_to_use <- dfs_to_tables(list_of_df)
 
-View(as.data.frame(hojas))
-
 
 # Esta función corre la prueba chi-cuadrado en todas la tablas y guarda los 
 # los resultados en una lista.
@@ -226,7 +224,7 @@ for (i in list_of_df2) {
 
 
 #Gráficos de barras porcentuales.
-borrar <- list()
+
 for (i in 1:length(tables_barplots)) { 
   datos<- tables_barplots[[i]] 
   cols1 <- c("#FFA07A", "#528B8B", "#8B668B", "#8B0A50") 
@@ -234,14 +232,15 @@ for (i in 1:length(tables_barplots)) {
   colnames(datos) <- gsub("[.]", " ", colnames(datos)) 
   dataframe<- as.data.frame(datos) 
   
-  borrar[[i]] <- ggplot(dataframe, aes(x = Var2, y = Freq, fill= Condicion ) ) + 
+  plot <- ggplot(dataframe, aes(x = Var2, y = Freq, fill= Condicion ) ) + 
     labs(x = "Variable", y = "Porcentaje de Mujeres")+ 
     geom_bar(width = 0.9, stat = "identity", position = position_dodge()) + 
     scale_fill_manual(values = cols1, "Condición") + 
     theme_minimal() 
+  print(plot)
 } 
 
-print(borrar[[1]])
+
 
 colores_personalizados <- c("Sin pareja" = "#FFA07A", "Con pareja" = "#528B8B",  
                             "Sin hijos" = "#FFA07A", "Con hijos" = "#528B8B",  
