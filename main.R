@@ -224,7 +224,6 @@ for (i in list_of_df2) {
 
 
 #Gráficos de barras porcentuales.
-
 for (i in 1:length(tables_barplots)) { 
   datos<- tables_barplots[[i]] 
   cols1 <- c("#FFA07A", "#528B8B", "#8B668B", "#8B0A50") 
@@ -233,32 +232,30 @@ for (i in 1:length(tables_barplots)) {
   dataframe<- as.data.frame(datos) 
   
   plot <- ggplot(dataframe, aes(x = Var2, y = Freq, fill= Condicion ) ) + 
-    labs(x = "Variable", y = "Porcentaje de Mujeres")+ 
+    labs(x = "Variable", y = "Porcentaje de Mujeres") + 
     geom_bar(width = 0.9, stat = "identity", position = position_dodge()) + 
     scale_fill_manual(values = cols1, "Condición") + 
-    theme_minimal() 
+    theme_minimal()
   print(plot)
 } 
 
-
-
+#Colores para lo gráficos de bigotes.
 colores_personalizados <- c("Sin pareja" = "#FFA07A", "Con pareja" = "#528B8B",  
                             "Sin hijos" = "#FFA07A", "Con hijos" = "#528B8B",  
                             "0 a 5" = "#FFA07A", "6 a 14 " = "#528B8B",  
                             "6 a 14" = "pink", "15 o más" = "#528B8B") 
 
 #Gráficos de caja de bigotes.
-for (i in 1:length(list_of_df2)){ 
+for (i in 1:length(list_of_df2)){
   datos<- list_of_df2[[i]] 
   colnames(datos) <- gsub("[.]", " ", colnames(datos)) 
   datos_long5 <- gather(datos, Variable, Valor, -(Año:Total)) 
   
   plot <- ggplot(datos_long5, aes(x = factor(Variable), y = Valor, fill = Condición)) + 
-    geom_boxplot()+ 
+    geom_boxplot() + 
     scale_fill_manual(values = colores_personalizados) + 
-    labs(title = "", x = "Variable", y = "Porcentaje  de Mujeres") +  
-    theme_minimal() 
-  print(plot) 
+    labs(title = "", x = "Variable", y = "Porcentaje  de Mujeres") +
+    theme_minimal()
 }
 
 #Gráficos de mosaico.
@@ -274,4 +271,3 @@ ggplot(data = df_to_plot) +
   geom_mosaic(aes(weight=Freq, x=product(Condicion), fill=Var2), na.rm=TRUE) +
   labs(x = "Maternindad", y = "Cualificación", fill = "Cualificación") + 
   theme_minimal()
-

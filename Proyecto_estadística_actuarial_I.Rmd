@@ -266,7 +266,7 @@ results <- cbind(chi_test_results, unname(unlist(cramerv_test_results)),
 
 Se crea un data frame con los tests realizados y sus resultados sobre cada variable.
 
-```{r, results='asis', echo=FALSE}
+```{r, results='asis'}
 row_names <- c("Nivel educativo de las mujeres desocupadas según la tenencia de hijos", "Nivel educativo de las mujeres ocupadas según la tenencia de hijos", "Nivel educativo de las mujeres de acuerdo al rango de esdad de los hijos", "Jornada de trabajo de las madres de acuerdo a la tenencia de pareja", "Jornada de trabajo de las madres de acuerdo al rango de edad de los hijos", "Jornada de trabajo de las mujeres ocupadas de acuerdo a la tenencia de hijos", "La edad de las mujeres desocupadas de acuerdo a la tenencia de hijos", "La edad de las mujeres ocupadas de acuerdo a la tenencia de hijos", "La edad de las mujeres de acuerdo con el rango edad de los hijos", "Calificación del grupo ocupacional de acuerdo a la tenencia de hijos", "Calificación del grupo ocupacional de acuerdo al rango de edad de los hijos", "Formalidad del trabajo de acuerdo a la tenencia de hijos", "Formalidad del trabajo de acuerdo al rango de edad de los hijos", "Experiencia laboral de las mujeres desocupadas de acuerdo a la tenencia de hijos")
 ```
 
@@ -280,13 +280,9 @@ knitr::kable(df, format = "markdown")
 
 
 
-En el caso de la prueba Chi-Cuadrado todos los casos analizados obtuvieron un p-valor menor a 0.05, por lo que se rechaza la hipótesis nula y por ende, se acepta el criterio de que son variables dependientes. De esta manera se responde al segundo objetivo de la investigación.
-Por ejemplo, con un nivel de confianza del 95 % se afirma que la condición de tener hijos o no está
-asociado al nivel educativo de las mujeres desocupadas. También, que el estado conyugal de la mujer
-con hijos está vinculado con su jornada de trabajo.
+En el caso de la prueba Chi-Cuadrado todos los casos analizados obtuvieron un p-valor menor a 0.05, por lo que se rechaza la hipótesis nula y por ende, se acepta el criterio de que son variables dependientes. De esta manera se responde al segundo objetivo de la investigación. Por ejemplo, con un nivel de confianza del 95 % se afirma que la condición de tener hijos o no está asociado al nivel educativo de las mujeres desocupadas. También, que el estado conyugal de la mujer con hijos está vinculado con su jornada de trabajo.
 
-En cuanto a los resultados de la V de Cramer y del Coeficiente de Contingecia de Pearson resulta evidente variedad en los niveles de dependencia. Se puede ver que existe una relación alta entre la edad de la mujer y la condición de tener hijos o no y entre la edad de la mujer y la edad de los hijos. No obstante, contrario a lo observado en otros estudios, la jornada laboral muestra una relación débil con la condición de tener hijos o no. Esto puede suceder debido a que los mayores porcentajes de mujeres ocupadas con hijos son aquellas con edades de 45 años o más, a esto se le añade el hecho de que en este intervalo se encuentra dentro del grupo de edad de las madres con hijos de 15 años o más
-el cual, también representa los porcentajes más altos. Por lo tando, al tener hijo con una edad de mayor independencia, la incidencia que estos puedan tener en el empleo de las madres es menor.
+En cuanto a los resultados de la V de Cramer y del Coeficiente de Contingecia de Pearson resulta evidente la variedad en los niveles de dependencia. Se puede ver que existe una relación alta entre la edad de la mujer y la condición de tener hijos o no y entre la edad de la mujer y la edad de los hijos. No obstante, contrario a lo observado en otros estudios, la jornada laboral muestra una relación débil con la condición de tener hijos o no. Una interprestación de ello, se basa en el analisísi de los gráficos de barras, pues en la figura sobre la edad de las mujeres desocupadas de acuerdo a la tenencia de hijos, visible en la sección de [Gráficos de barras porcentuales](#gráficos-de-barras-porcentuales), es posible observar que para el caso de las mujeres desocupadas se muestra una tendencia a que conforme aumenta la edad de la mujer hay una mayor inclinación a tener hijos que a no tenerlos. Siendo observable que para el rango de edad entre los 15 a 24 años la mayoría de mujeres no tienen hijos, mientras tanto, para los otros dos rangos de edad se da un notable cambio a tener hijos. Por otro lado, para las mujeres ocupadas se refleja en el gráfico sobre la edad de las mujeres ocupadas de acuerdo a la tenencia de hijos, una preferencia a no tener hijos en las edades tempranas pues apenas están ingresando en el mercado laboral las cuales corresponden a las mujeres de 15 a 24 años y de 25 a 44 años. Caso contrario para las mujeres en el rango de edad más alto donde es posible observar que la mayoría tienen hijos. Esto puede deberse a como indica Gallardo (2021) que las mujeres que trabajan muchas veces desean aplazar la tenencia de hijos con el propósito de alcanzar una buena estabilidad laboral y por ende económica para sus futuros hijos. También, es importante considerar el comportamiento que refleja la edad de los hijos para las madres que trabajan, así, en el gráfico sobre la edad de las mujeres de acuerdo con el rango de edad de los hijos, se evidencia que las mujeres jóvenes tienen una predisposición a tener hijos pequeños, es decir, de 0 a 5 años y para las mujeres de 35 años o más la mayoría tiene hijos de 15 años o más. En general, esto puede implicar que la mayoría de mujeres ocupadas suelen tener hijos a una joven edad.
 
 En síntesis, en respuesta al tercer objetivo de investigación se tiene que de acuerdo con los resultados obtenidos de la V de Cramer y el Coeficiente de Contingencia de Pearson, se determina que los factores de mayor incidencia son: 
 
@@ -319,27 +315,29 @@ tables_for_barplots <- function(tables){
 tables_barplots <- tables_for_barplots(tables_to_use)
 ```
 
-## Gráficos de puntos.
+## Gráficos de puntos
 
-```{r, eval=FALSE}
+```{r}
+index <- 0
 for (i in list_of_df2) {
+  index <- index + 1
   colnames(i) <- gsub("[.]", " ", colnames(i))
   datos_long <- gather(i, Variable, Valor, -(Año:Total)) 
   cols1 <- c("#FFA07A", "#528B8B", "#8B668B", "#8B0A50") 
   
-  plot <- ggplot (data=datos_long, aes(x=factor(Condición), y = Valor, col= factor(Año), shape=factor(Trimestre))) + 
-    geom_point() + labs( x = "Condición", y = "Porcentaje de Mujeres", col = "Año", shape = "Trimestre") + 
+  plot <- ggplot(data=datos_long, aes(x=factor(Condición), y = Valor, col= factor(Año), shape=factor(Trimestre))) + 
+    geom_point() + labs( x = "Condición", y = "Porcentaje de Mujeres", col = "Año", shape = "Trimestre") + ggtitle(row_names[[index]]) +
     scale_color_manual(values = cols1) + 
     facet_wrap(~Variable, scales = "free_y") + 
-    theme_minimal() 
+    theme_minimal() + theme(plot.title = element_text(face="italic", hjust = 0.5))
   
   print(plot) 
 } 
 ```
 
-## Gráficos de barras porcentuales.
+## Gráficos de barras porcentuales
 
-```{r, eval=FALSE}
+```{r}
 for (i in 1:length(tables_barplots)) { 
   datos<- tables_barplots[[i]] 
   cols1 <- c("#FFA07A", "#528B8B", "#8B668B", "#8B0A50") 
@@ -347,24 +345,30 @@ for (i in 1:length(tables_barplots)) {
   colnames(datos) <- gsub("[.]", " ", colnames(datos)) 
   dataframe<- as.data.frame(datos) 
   
-  g <- ggplot(dataframe, aes(x = Var2, y = Freq, fill= Condicion ) ) + 
-    labs(x = "Variable", y = "Porcentaje de Mujeres")+ 
+  plot <- ggplot(dataframe, aes(x = Var2, y = Freq, fill= Condicion ) ) + 
+    labs(x = "Variable", y = "Porcentaje de Mujeres") + ggtitle(row_names[[i]]) +
     geom_bar(width = 0.9, stat = "identity", position = position_dodge()) + 
     scale_fill_manual(values = cols1, "Condición") + 
-    theme_minimal() 
-  print(g) 
+    theme_minimal()
+  
+  if(i <= 2 | i == 6){
+    plot <- plot + theme(plot.title = element_text(face="italic", hjust = 0.5), axis.text.x = element_text(size = 10, angle = 45, hjust=1))
+  } else {
+    plot <- plot + theme(plot.title = element_text(face="italic", hjust = 0.5))
+  }
+  print(plot)
+
 } 
 ```
 
 ## Gráficos de cajas de bigotes
-```{r, eval=FALSE}
+```{r}
 colores_personalizados <- c("Sin pareja" = "#FFA07A", "Con pareja" = "#528B8B",  
                             "Sin hijos" = "#FFA07A", "Con hijos" = "#528B8B",  
                             "0 a 5" = "#FFA07A", "6 a 14 " = "#528B8B",  
                             "6 a 14" = "pink", "15 o más" = "#528B8B") 
 
-
-for (i in 1:length(list_of_df2)){ 
+for (i in 1:length(list_of_df2)){
   datos<- list_of_df2[[i]] 
   colnames(datos) <- gsub("[.]", " ", colnames(datos)) 
   datos_long5 <- gather(datos, Variable, Valor, -(Año:Total)) 
@@ -372,16 +376,21 @@ for (i in 1:length(list_of_df2)){
   plot <- ggplot(datos_long5, aes(x = factor(Variable), y = Valor, fill = Condición)) + 
     geom_boxplot()+ 
     scale_fill_manual(values = colores_personalizados) + 
-    labs(title = "", x = "Variable", y = "Porcentaje  de Mujeres") +  
+    labs(title = "", x = "Variable", y = "Porcentaje  de Mujeres") + ggtitle(row_names[[i]]) +
     theme_minimal() 
-  print(plot) 
+  
+  if(i <= 2){
+    plot <- plot + theme(plot.title = element_text(face="italic", hjust = 0.5), axis.text.x = element_text(size = 10, angle = 45, hjust=1))
+  } else {
+    plot <- plot + theme(plot.title = element_text(face="italic", hjust = 0.5))
+  }
+  print(plot)
 }
 ```
 
 ## Gráficos de cajas de mosaico
 ```{r}
 df_to_plot <- list_of_df[[10]]
-print(colnames(df_to_plot))
 colnames(df_to_plot) <- c("Año","Trimestre", "Condicion", "Alta","Media", "No calificada") 
 
 df_to_plot <- df_to_table(df_to_plot)
@@ -391,5 +400,6 @@ df_to_plot<- as.data.frame(df_to_plot)
 ggplot(data = df_to_plot) +
   geom_mosaic(aes(weight=Freq, x=product(Condicion), fill=Var2), na.rm=TRUE) +
   labs(x = "Maternindad", y = "Cualificación", fill = "Cualificación") + 
-  theme_minimal()
+  ggtitle(row_names[[10]]) +
+  theme_minimal() + theme(plot.title = element_text(face="italic", hjust = 0.5)) 
 ```
